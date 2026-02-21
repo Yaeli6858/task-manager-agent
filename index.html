@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סוכן המשימות שלי 🤖</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!--
+        How to change colors:
+        - Edit the CSS variables inside the <style> :root block (see --page-bg, --header-bg, --accent, etc.).
+        - You can define alternate themes by copying the example and uncommenting it.
+        - If you prefer, move these variables into a separate CSS file and load it with <link>.
+    -->
+    <style>
+        /* Theme variables: change these to update the page colors */
+        :root {
+            /* Purple theme */
+            --page-bg: #f5f3ff;        /* very light purple */
+            --page-bg-accent: linear-gradient(180deg, rgba(124,58,237,0.06), rgba(124,58,237,0.02));
+            --card-bg: #ffffff;        /* card background */
+            --header-gradient-start: #7c3aed; /* purple-600 */
+            --header-gradient-end: #a78bfa;   /* purple-300 */
+            --header-text: #ffffff;    /* white */
+            --bot-bg: #efe9ff;         /* light lavender */
+            --bot-text: #4c1d95;       /* deep purple text */
+            --user-bg: linear-gradient(90deg, #7c3aed, #8b5cf6); /* purple gradient */
+            --user-text: #ffffff;      /* white */
+            --accent: #7c3aed;         /* primary accent (buttons, focus) */
+            --accent-hover: #5b21b6;   /* darker accent for hover */
+            --input-border: #e6e0ff;   /* faint purple */
+            --muted-text: #6b7280;     /* gray for small text */
+        }
+
+        /* Example alternate theme (uncomment to try):
+        :root {
+            --page-bg: #0f172a; --card-bg: #0b1220; --header-bg: #0ea5a4; --header-text: #021129;
+            --bot-bg: #071233; --bot-text: #cbd5e1; --user-bg: #06b6d4; --user-text: #001219; --accent: #06b6d4; --accent-hover: #0891b2; --input-border: #1f2937;
+        }
+        */
+
+        html, body {
+            height: 100%;
+            background: var(--page-bg);
+            background-image: var(--page-bg-accent);
+            margin: 0;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Semantic classes that use the variables */
+        .chat-shell { display: flex; flex-direction: column; height: 100vh; }
+    .chat-container { background: var(--card-bg); border-radius: 12px; overflow: hidden; }
+    .app-header { background: linear-gradient(90deg, var(--header-gradient-start), var(--header-gradient-end)); color: var(--header-text); }
+    .bot-msg { background: var(--bot-bg); color: var(--bot-text); border-radius: 12px; box-shadow: 0 2px 4px rgba(16,24,40,0.04); padding-left: 12px; padding-right: 12px; }
+    .user-msg { background: var(--user-bg); color: var(--user-text); border-radius: 16px; box-shadow: 0 6px 18px rgba(124,58,237,0.12); padding-left: 12px; padding-right: 12px; }
+    .send-btn { background: linear-gradient(90deg, var(--accent), var(--header-gradient-end)); color: var(--header-text); border: none; }
+    .send-btn:hover { filter: brightness(0.95); transform: translateY(-1px); }
+    .app-input { border-color: var(--input-border); background: linear-gradient(180deg, #fff, #fbf8ff); }
+
+    /* smaller improvements */
+    .chat-shell { padding: 28px 18px; }
+    .chat-container { max-height: 92vh; }
+    .message-time { font-size: 0.75rem; color: var(--muted-text); margin-top: 4px; }
+
+        /* Small helpers to ensure Tailwind layout + our theming work together */
+        .rounded-full { border-radius: 9999px; }
+        .rounded-lg { border-radius: 0.5rem; }
+    </style>
+</head>
+<body class="chat-shell">
+    <div id="root" class="flex flex-col h-full"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        function ChatApp() {
+            const [messages, setMessages] = useState([
+                { text: "היי! אני סוכן המשימות שלך. איך אפשר לעזור היום?", isBot: true }
+            ]);
+            const [input, setInput] = useState("");
+            const [loading, setLoading] = useState(false);
+            const scrollRef = useRef(null);
+
+            // גלילה אוטומטית למטה כשיש הודעה חדשה
+            useEffect(() => {
+                scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+            }, [messages]);
+
+            const sendMessage = async () => {
+                if (!input.trim()) return;
+
+                const userMsg = { text: input, isBot: false };
+                setMessages(prev => [...prev, userMsg]);
+                setInput("");
+                setLoading(true);
+
+                try {
+                    const response = await fetch("http://127.0.0.1:8000/chat", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ message: input })
+                    });
+                    const data = await response.json();
+                    setMessages(prev => [...prev, { text: data.response, isBot: true }]);
+                } catch (error) {
+                    setMessages(prev => [...prev, { text: "אופס, השרת לא מגיב. וודאי שפייתון רץ!", isBot: true }]);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+                return (
+                    <div className="flex flex-col h-full max-w-2xl mx-auto w-full chat-container shadow-xl">
+                        <header className="app-header p-4 text-center font-bold text-xl shadow-md">
+                        ניהול משימות חכם 🤖
+                    </header>
+                    
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        {messages.map((msg, i) => (
+                            <div key={i} className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}>
+                                    <div className={`max-w-[80%] p-3 rounded-lg ${msg.isBot ? 'bot-msg' : 'user-msg'}`}>
+                                    {msg.text}
+                                </div>
+                            </div>
+                        ))}
+                        {loading && <div className="text-gray-400 italic text-sm">הסוכן חושב...</div>}
+                        <div ref={scrollRef} />
+                    </div>
+
+                        <div className="p-4 border-t flex gap-2">
+                        <input 
+                            type="text" 
+                                className="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 app-input"
+                            placeholder="כתבי כאן משימה"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                        />
+                        <button 
+                            onClick={sendMessage}
+                                className="send-btn px-6 py-2 rounded-full hover:opacity-95 transition"
+                        >
+                            שלחי
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<ChatApp />);
+    </script>
+</body>
+</html>
