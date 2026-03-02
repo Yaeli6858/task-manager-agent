@@ -69,10 +69,16 @@ The Backend implements **CORS (Cross-Origin Resource Sharing)** middleware, allo
 ---
 
 ##  Prerequisites & Installation
+ Clone the Repository
+```bash
+git clone https://github.com/Yaeli6858/task-manager-agent
+cd todo-agent
+```
 
 ### 1. Requirements
 * **Python 3.10+**
-* **Groq API Key** * **Virtual Environment (venv)**
+* **Groq API Key**
+* **Virtual Environment (venv)**
 
 ### 2. Environment Setup
 Create a `.env` file in the root directory:
@@ -81,14 +87,10 @@ GROQ_API_KEY=your_api_key_here
 ````
 
 ### 3. Install Dependencies
-
-Run the following command in your terminal:
-
+Ensure your virtual environment is activated, then run:
 ```bash
-pip install groq python-dotenv fastapi uvicorn httpx pydantic
+pip install -r requirements.txt
 ```
-
----
 
 ##  Execution
 
@@ -123,6 +125,21 @@ Open `index.html` using a local server
 - "תמחק את כל מה שקשור לקניות"
 
 ---
+
+
+## 🔌 API Documentation (Interactive Swagger UI)
+One of the powerful features of **FastAPI** is the automatic generation of interactive API documentation. 
+This allows developers to test the agent's endpoints directly from the browser.
+
+**How to access:**
+1. Start the backend server (`uvicorn main:app --reload`).
+2. Navigate to: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+<p align="center">
+  <img src="swagger-ui.png" alt="Swagger UI Documentation" width="800">
+</p>
+
+
 
 ##  Developer Perspective
 
