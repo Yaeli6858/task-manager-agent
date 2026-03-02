@@ -8,7 +8,7 @@ The system leverages a **Large Language Model (LLM)** via the Groq API, using **
 ---
 
 <p align="center">
-  <img src="demo.gif" alt="AI Agent Demo" width="600">
+  <img src="screenshot.gif" alt="AI Agent Demo" width="600">
 </p>
 
 ---
