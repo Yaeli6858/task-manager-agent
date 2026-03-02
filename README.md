@@ -1,3 +1,7 @@
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 # Intelligent To-Do AI Agent 
 ### *A Full-Stack Autonomous Task Management System Powered by LLMs*
 
@@ -72,7 +76,7 @@ The Backend implements **CORS (Cross-Origin Resource Sharing)** middleware, allo
  Clone the Repository
 ```bash
 git clone https://github.com/Yaeli6858/task-manager-agent
-cd todo-agent
+cd task-manager-agent
 ```
 
 ### 1. Requirements
