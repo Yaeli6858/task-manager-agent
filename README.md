@@ -71,6 +71,19 @@ The Backend implements **CORS (Cross-Origin Resource Sharing)** middleware, allo
 * **Modern UI:** Built with React hooks and Tailwind CSS for a sleek, interactive experience.
 
 ---
+## How It Works (Function Calling Flow)
+
+User Input → FastAPI → Groq LLM
+                          ↓
+              Decides which tool to call
+                          ↓
+              get_tasks / add_task / update_task / delete_task
+                          ↓
+              Result sent back to LLM
+                          ↓
+              Hebrew natural response → User
+
+---
 
 ##  Prerequisites & Installation
  Clone the Repository
@@ -84,13 +97,22 @@ cd task-manager-agent
 * **Groq API Key**
 * **Virtual Environment (venv)**
 
-### 2. Environment Setup
+### 2. Virtual Environment Setup
+```bash
+python -m venv venv
+# Windows:
+.\venv\Scripts\activate
+# Mac/Linux:
+source venv/bin/activate
+```
+
+### 3. Environment Configuration
 Create a `.env` file in the root directory:
 ```env
 GROQ_API_KEY=your_api_key_here
-````
+```
 
-### 3. Install Dependencies
+### 4. Install Dependencies
 Ensure your virtual environment is activated, then run:
 ```bash
 pip install -r requirements.txt

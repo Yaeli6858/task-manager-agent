@@ -7,7 +7,7 @@ from todo_service import get_tasks, add_task, update_task, delete_task
 
 load_dotenv()
 
-# (עבור נטפרי)
+# netfree
 http_client = httpx.Client(verify=False)
 
 client = Groq(
